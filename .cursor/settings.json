@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "github": {
+      "enabled": true
+    },
+    "slack": {
+      "enabled": true
+    }
+  }
+}

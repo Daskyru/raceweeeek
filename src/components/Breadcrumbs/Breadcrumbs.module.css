@@ -1,0 +1,31 @@
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.link {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--color-accent);
+}
+
+.sep {
+  opacity: 0.5;
+}
+
+.current {
+  color: var(--color-accent);
+}
+
+.currentF1Red {
+  color: var(--color-accent);
+}

@@ -1,0 +1,50 @@
+.scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+}
+
+.table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.table tbody tr:hover {
+  background: var(--color-surface-muted);
+}
+
+.pos {
+  font-weight: 700;
+  color: var(--color-accent);
+  width: 3rem;
+}
+
+.compound {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+/* DNF, DNS, DSQ in session results */
+.dnf {
+  color: var(--color-accent);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}

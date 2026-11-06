@@ -1,0 +1,10 @@
+.header {
+  margin-bottom: 0.5rem;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-f1-red);
+}

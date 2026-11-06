@@ -1,0 +1,136 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  background: var(--color-surface-muted);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: -0.25rem -0.5rem 0;
+  border: 1px solid var(--color-border-light);
+}
+
+.wrapDark {
+  background: #000;
+  border-color: #222;
+}
+
+.wrapDark .title {
+  color: #f5f5f5;
+}
+
+.wrapDark .subtitle {
+  color: #a3a3a3;
+}
+
+.wrapDark .circuitName {
+  color: #fff;
+}
+
+.wrapDark .legend {
+  color: #a3a3a3;
+}
+
+.header {
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.circuitName {
+  margin: 0.15rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.svgWrap {
+  padding: 0.25rem 0.75rem 0.75rem;
+  width: 100%;
+  max-height: min(52vh, 420px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  max-height: min(52vh, 420px);
+  display: block;
+}
+
+.fallbackImg,
+.schemeImg {
+  width: 100%;
+  max-height: min(52vh, 420px);
+  height: auto;
+  object-fit: contain;
+  padding: 0.75rem 1rem 1rem;
+  display: block;
+  margin: 0 auto;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  width: 1.25rem;
+  height: 0.25rem;
+  border-radius: 2px;
+}
+
+.labelText {
+  fill: var(--color-bg);
+  font-weight: 700;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: var(--color-accent);
+  stroke-width: 40px;
+  stroke-linejoin: round;
+}
+
+.sectorLabel {
+  pointer-events: all;
+  paint-order: stroke fill;
+  stroke: var(--color-accent);
+  stroke-width: 48px;
+  stroke-linejoin: round;
+}
+
+.smLabel {
+  fill: var(--color-accent);
+  font-weight: 700;
+  pointer-events: none;
+  font-size: 0.65em;
+}

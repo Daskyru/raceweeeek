@@ -1,0 +1,84 @@
+.page {
+  min-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.title {
+  margin: 0 0 3rem;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.titleAccent {
+  color: var(--color-accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+@media (min-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card {
+  position: relative;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  text-align: center;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.cardLink:hover .card,
+.cardLink:focus-visible .card {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.cardDisabled {
+  composes: card;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: var(--color-disabled-badge-bg);
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,30 @@
+:root {
+  --color-bg: #19152f;
+  --color-bg-elevated: #222044;
+  --color-surface: #252148;
+  --color-surface-muted: #2a2654;
+  --color-text: #a5e7ff;
+  --color-text-muted: rgba(165, 231, 255, 0.65);
+  --color-text-on-surface: #a5e7ff;
+  --color-f1-red: #e10600;
+  --color-accent: #a5e7ff;
+  --color-accent-hover: #c4efff;
+  --color-border: rgba(165, 231, 255, 0.25);
+  --color-border-light: rgba(165, 231, 255, 0.12);
+  --color-accent-muted: rgba(165, 231, 255, 0.18);
+  --color-accent-soft: rgba(165, 231, 255, 0.1);
+  --color-status-upcoming-bg: rgba(165, 231, 255, 0.12);
+  --color-status-upcoming-text: rgba(165, 231, 255, 0.85);
+  --color-status-completed-bg: rgba(25, 21, 47, 0.6);
+  --color-status-completed-text: rgba(165, 231, 255, 0.75);
+  --color-status-cancelled-bg: rgba(165, 231, 255, 0.08);
+  --color-status-cancelled-text: #a5e7ff;
+  --color-error-border: rgba(165, 231, 255, 0.45);
+  --color-error-bg: rgba(165, 231, 255, 0.08);
+  --color-error-text: #c4efff;
+  --color-disabled-badge-bg: rgba(165, 231, 255, 0.1);
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --radius: 8px;
+  --shadow-glow: 0 0 24px rgba(165, 231, 255, 0.35);
+  --max-width: 1200px;
+}
