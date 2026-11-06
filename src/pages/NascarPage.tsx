@@ -37,10 +37,7 @@ export function NascarPage() {
   const meetingsQuery = useNascarMeetings(seasonYear)
   const meetings = meetingsQuery.data ?? []
 
-  const standingsQuery = useNascarStandings(
-    seasonYear,
-    meetingsQuery.isSuccess || meetings.length > 0,
-  )
+  const standingsQuery = useNascarStandings(seasonYear)
 
   const [meetingKey, setMeetingKey] = useState<number | null>(null)
   const [sessionKey, setSessionKey] = useState<SessionUiKey>('fp1')
@@ -132,7 +129,9 @@ export function NascarPage() {
                 drivers={standingsDrivers}
                 teams={[]}
                 hasSeasonRaces={
-                  standingsDrivers.length > 0 || standingsLoadingDrivers
+                  standingsDrivers.length > 0 ||
+                  standingsLoadingDrivers ||
+                  standingsQuery.isFetching
                 }
                 isLoadingDrivers={standingsLoadingDrivers}
                 isLoadingTeams={false}
@@ -144,7 +143,8 @@ export function NascarPage() {
 
       <div id="calendar">
         <Card title="Календарь гонок">
-          {meetingsQuery.isLoading && meetings.length === 0 ? (
+          {(meetingsQuery.isLoading || meetingsQuery.isFetching) &&
+          meetings.length === 0 ? (
             <LoadingSpinner variant="f1" />
           ) : meetingsQuery.isError && meetings.length === 0 ? (
             <ErrorState />
@@ -196,8 +196,9 @@ export function NascarPage() {
 
       <div id="results">
         <Card title="Результаты сессий">
-          {sessionsQuery.isLoading ? (
-            <LoadingSkeleton rows={6} />
+          {sessionsQuery.isLoading ||
+          (sessionsQuery.isFetching && sessions.length === 0) ? (
+            <LoadingSpinner variant="f1" />
           ) : (
             <SessionResultsPanel
               variant="nascar"

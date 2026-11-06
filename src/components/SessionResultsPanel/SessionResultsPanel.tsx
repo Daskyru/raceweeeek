@@ -158,11 +158,22 @@ export function SessionResultsPanel({
       { key: 'laps', header: 'Круги', render: (r) => r.laps },
     ]
 
+    const nascarPointsColumn: DataTableColumn<ResultRow> = {
+      key: 'pts',
+      header: 'Очки',
+      className: tableStyles.pos,
+      render: (r) => (r.sessionPoints != null ? r.sessionPoints : '—'),
+    }
+
+    if (variant === 'nascar' && activeKey !== 'race') {
+      return [...base, ...timeAndLaps]
+    }
+
     if (activeKey === 'race' && (variant === 'gt3' || variant === 'nascar')) {
       return [
         ...base,
         ...timeAndLaps,
-        {
+        variant === 'nascar' ? nascarPointsColumn : {
           key: 'pts',
           header: 'Очки',
           className: tableStyles.pos,

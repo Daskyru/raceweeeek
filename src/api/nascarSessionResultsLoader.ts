@@ -23,6 +23,19 @@ function formatSpeedMph(speed: number): string {
   return `${speed.toFixed(3)} mph`
 }
 
+function runResultStatus(r: NascarWeekendRunResult): ResultRow['status'] {
+  if (r.disqualified) return 'DSQ'
+  const pos = r.finishing_position
+  if (pos <= 0) {
+    const c = (r.comment ?? '').trim().toLowerCase()
+    if (c.includes('dns') || c.includes('did not start')) return 'DNS'
+    if (c.includes('dnq') || c.includes('did not qualify')) return 'DNS'
+    if ((r.laps_completed ?? 0) > 0 || r.delta_leader != null) return 'DNF'
+    return 'DNS'
+  }
+  return null
+}
+
 function formatRunBestTime(r: NascarWeekendRunResult): string {
   if (r.best_lap_time != null && r.best_lap_time > 0) {
     return formatSingleLapTime(r.best_lap_time)
@@ -34,32 +47,56 @@ function formatRunBestTime(r: NascarWeekendRunResult): string {
 }
 
 function sortRunResults(results: NascarWeekendRunResult[]): NascarWeekendRunResult[] {
-  const classified = results.filter(
-    (r) => r.finishing_position > 0 && !r.disqualified,
-  )
-  return [...classified].sort((a, b) => {
+  const copy = [...results]
+  const str = (a: NascarWeekendRunResult, b: NascarWeekendRunResult) =>
+    a.driver_name.trim().localeCompare(b.driver_name.trim(), 'en') ||
+    carNumberToInt(a.car_number) - carNumberToInt(b.car_number)
+
+  return copy.sort((a, b) => {
     const posA = a.finishing_position
     const posB = b.finishing_position
-    if (posA !== posB) return posA - posB
-    const tA = a.best_lap_time ?? Number.POSITIVE_INFINITY
-    const tB = b.best_lap_time ?? Number.POSITIVE_INFINITY
-    if (tA !== tB) return tA - tB
-    const spdA = a.best_lap_speed ?? 0
-    const spdB = b.best_lap_speed ?? 0
-    return spdB - spdA
+    const aClass = posA > 0
+    const bClass = posB > 0
+    if (aClass !== bClass) return aClass ? -1 : 1
+    if (aClass && bClass && posA !== posB) return posA - posB
+    if (aClass && bClass) {
+      const tA = a.best_lap_time ?? Number.POSITIVE_INFINITY
+      const tB = b.best_lap_time ?? Number.POSITIVE_INFINITY
+      if (tA !== tB) return tA - tB
+      const spdA = a.best_lap_speed ?? 0
+      const spdB = b.best_lap_speed ?? 0
+      if (spdA !== spdB) return spdB - spdA
+    }
+    return str(a, b)
   })
 }
 
 function mapRunResults(run: NascarWeekendRun): ResultRow[] {
-  return sortRunResults(run.results).map((r, idx) => ({
-    position: r.finishing_position > 0 ? r.finishing_position : idx + 1,
-    driverNumber: carNumberToInt(r.car_number),
-    driverName: r.driver_name.trim(),
-    teamName: (r.manufacturer ?? '').trim() || '—',
-    bestTime: formatRunBestTime(r),
-    laps: r.laps_completed ?? 0,
-    status: r.disqualified ? 'DSQ' : null,
-  }))
+  const sorted = sortRunResults(run.results)
+  const maxPos = sorted.reduce(
+    (m, r) => (r.finishing_position > 0 ? Math.max(m, r.finishing_position) : m),
+    0,
+  )
+  let unclassified = 0
+  return sorted.map((r) => {
+    const status = runResultStatus(r)
+    const timeStr = formatRunBestTime(r)
+    const bestTime = status ?? timeStr
+    return {
+      position:
+        r.finishing_position > 0 ? r.finishing_position : maxPos + ++unclassified,
+      driverNumber: carNumberToInt(r.car_number),
+      driverName: r.driver_name.trim(),
+      teamName: (r.manufacturer ?? '').trim() || '—',
+      bestTime,
+      laps: r.laps_completed ?? 0,
+      status,
+      sessionPoints:
+        r.points_earned != null && Number.isFinite(r.points_earned)
+          ? r.points_earned
+          : null,
+    }
+  })
 }
 
 function mapRaceStatus(row: NascarRaceResultRow): ResultRow['status'] {
@@ -98,12 +135,28 @@ function mapRaceResults(
   results: NascarRaceResultRow[],
   winnerTotalRaceTime?: string | null,
 ): ResultRow[] {
-  const sorted = [...results]
-    .filter((r) => r.finishing_position > 0)
-    .sort((a, b) => a.finishing_position - b.finishing_position)
+  const sorted = [...results].sort((a, b) => {
+    const posA = a.finishing_position
+    const posB = b.finishing_position
+    const aPos = posA > 0
+    const bPos = posB > 0
+    if (aPos !== bPos) return aPos ? -1 : 1
+    if (aPos && bPos && posA !== posB) return posA - posB
+    return (
+      a.driver_fullname.trim().localeCompare(b.driver_fullname.trim(), 'en') ||
+      carNumberToInt(a.car_number) - carNumberToInt(b.car_number)
+    )
+  })
+
+  const maxPos = sorted.reduce(
+    (m, r) => (r.finishing_position > 0 ? Math.max(m, r.finishing_position) : m),
+    0,
+  )
+  let unclassified = 0
 
   return sorted.map((r) => ({
-    position: r.finishing_position,
+    position:
+      r.finishing_position > 0 ? r.finishing_position : maxPos + ++unclassified,
     driverNumber: carNumberToInt(r.car_number),
     driverName: r.driver_fullname.trim(),
     teamName: r.team_name?.trim() || '—',
@@ -111,7 +164,9 @@ function mapRaceResults(
     laps: r.laps_completed ?? 0,
     status: mapRaceStatus(r),
     sessionPoints:
-      r.points_earned != null && r.points_earned > 0 ? r.points_earned : null,
+      r.points_earned != null && Number.isFinite(r.points_earned)
+        ? r.points_earned
+        : null,
   }))
 }
 

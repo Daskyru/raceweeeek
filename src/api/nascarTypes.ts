@@ -40,6 +40,8 @@ export interface NascarWeekendRunResult {
   disqualified?: boolean
   delta_leader?: number
   comment?: string
+  /** Present on some runs (e.g. race); optional. */
+  points_earned?: number
 }
 
 export interface NascarWeekendRun {
