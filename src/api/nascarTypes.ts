@@ -69,11 +69,15 @@ export interface NascarRaceResultRow {
   diff_laps?: number
 }
 
+export interface NascarWeekendRaceBlock {
+  race_id: number
+  /** Wall-clock race duration for the winner (e.g. `"3:20:41"`). */
+  total_race_time?: string
+  results: NascarRaceResultRow[]
+}
+
 export interface NascarWeekendFeed {
-  weekend_race: Array<{
-    race_id: number
-    results: NascarRaceResultRow[]
-  }>
+  weekend_race: NascarWeekendRaceBlock[]
   weekend_runs: NascarWeekendRun[]
 }
 

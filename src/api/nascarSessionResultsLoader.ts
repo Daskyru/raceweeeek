@@ -24,11 +24,11 @@ function formatSpeedMph(speed: number): string {
 }
 
 function formatRunBestTime(r: NascarWeekendRunResult): string {
-  if (r.best_lap_speed != null && r.best_lap_speed > 0) {
-    return formatSpeedMph(r.best_lap_speed)
-  }
   if (r.best_lap_time != null && r.best_lap_time > 0) {
     return formatSingleLapTime(r.best_lap_time)
+  }
+  if (r.best_lap_speed != null && r.best_lap_speed > 0) {
+    return formatSpeedMph(r.best_lap_speed)
   }
   return '—'
 }
@@ -41,12 +41,12 @@ function sortRunResults(results: NascarWeekendRunResult[]): NascarWeekendRunResu
     const posA = a.finishing_position
     const posB = b.finishing_position
     if (posA !== posB) return posA - posB
-    const spdA = a.best_lap_speed ?? 0
-    const spdB = b.best_lap_speed ?? 0
-    if (spdA !== spdB) return spdB - spdA
     const tA = a.best_lap_time ?? Number.POSITIVE_INFINITY
     const tB = b.best_lap_time ?? Number.POSITIVE_INFINITY
-    return tA - tB
+    if (tA !== tB) return tA - tB
+    const spdA = a.best_lap_speed ?? 0
+    const spdB = b.best_lap_speed ?? 0
+    return spdB - spdA
   })
 }
 
@@ -72,10 +72,17 @@ function mapRaceStatus(row: NascarRaceResultRow): ResultRow['status'] {
   return 'DNF'
 }
 
-function formatRaceResult(row: NascarRaceResultRow): string {
+function formatRaceResult(
+  row: NascarRaceResultRow,
+  winnerTotalRaceTime?: string | null,
+): string {
   const status = mapRaceStatus(row)
   if (status) return status
-  if (row.finishing_position === 1) return 'Leader'
+  if (row.finishing_position === 1) {
+    const wall = winnerTotalRaceTime?.trim()
+    if (wall) return `Leader · ${wall}`
+    return 'Leader'
+  }
   const lapsDown = row.diff_laps ?? 0
   if (lapsDown > 0) {
     return `+${lapsDown} ${lapsDown === 1 ? 'lap' : 'laps'}`
@@ -87,7 +94,10 @@ function formatRaceResult(row: NascarRaceResultRow): string {
   return '—'
 }
 
-function mapRaceResults(results: NascarRaceResultRow[]): ResultRow[] {
+function mapRaceResults(
+  results: NascarRaceResultRow[],
+  winnerTotalRaceTime?: string | null,
+): ResultRow[] {
   const sorted = [...results]
     .filter((r) => r.finishing_position > 0)
     .sort((a, b) => a.finishing_position - b.finishing_position)
@@ -97,7 +107,7 @@ function mapRaceResults(results: NascarRaceResultRow[]): ResultRow[] {
     driverNumber: carNumberToInt(r.car_number),
     driverName: r.driver_fullname.trim(),
     teamName: r.team_name?.trim() || '—',
-    bestTime: formatRaceResult(r),
+    bestTime: formatRaceResult(r, winnerTotalRaceTime),
     laps: r.laps_completed ?? 0,
     status: mapRaceStatus(r),
     sessionPoints:
@@ -135,7 +145,7 @@ export async function loadNascarSessionResults(
   if (kind === NASCAR_SESSION_KIND.race) {
     const race = feed.weekend_race?.[0]
     if (!race?.results?.length) return []
-    return mapRaceResults(race.results)
+    return mapRaceResults(race.results, race.total_race_time)
   }
 
   const runs = feed.weekend_runs ?? []
