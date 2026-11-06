@@ -1,0 +1,22 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/openf1/(.*)",
+      "destination": "https://api.openf1.org/v1/$1"
+    },
+    {
+      "source": "/api/openwec/(.*)",
+      "destination": "https://api.openwec.com/api/v1/$1"
+    },
+    {
+      "source": "/api/circuit/(.*)",
+      "destination": "https://api.multiviewer.app/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
