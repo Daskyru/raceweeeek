@@ -171,6 +171,14 @@ export function CircuitMap({
   const wrapClass = darkWrap ? `${styles.wrap} ${styles.wrapDark}` : styles.wrap
 
   if (schemeImageUrl) {
+    if (schemeImageError && circuitImage) {
+      return (
+        <div className={wrapClass}>
+          <CircuitHeader displayLocation={displayLocation} displayName={displayName} />
+          <img className={styles.fallbackImg} src={circuitImage} alt="Схема трассы" />
+        </div>
+      )
+    }
     if (schemeImageError) {
       return (
         <div className={wrapClass}>

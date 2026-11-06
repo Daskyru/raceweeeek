@@ -5,8 +5,8 @@ import styles from './HomePage.module.css'
 const SERIES = [
   { id: 'f1', name: 'Formula 1', to: '/formula-1', active: true },
   { id: 'gt3', name: 'WEC (LMGT3)', to: '/lmgt3', active: true },
-  { id: 'hypercar', name: 'WEC Hypercar', to: '/wec-hypercar', active: true },
-  { id: 'nascar', name: 'NASCAR', active: false },
+  { id: 'hypercar', name: 'WEC (Hypercar)', to: '/wec-hypercar', active: true },
+  { id: 'nascar', name: 'NASCAR Cup', to: '/nascar', active: true },
 ] as const
 
 export function HomePage() {

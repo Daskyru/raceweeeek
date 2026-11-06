@@ -15,6 +15,10 @@
       "destination": "https://api.multiviewer.app/$1"
     },
     {
+      "source": "/api/nascar/(.*)",
+      "destination": "https://cf.nascar.com/$1"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }

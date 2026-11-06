@@ -1,0 +1,22 @@
+.header {
+  margin-bottom: 0.5rem;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.seasonNote {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}

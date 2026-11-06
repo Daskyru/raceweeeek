@@ -10,6 +10,10 @@ import {
   isSessionNotStarted,
 } from '../../utils/sessions'
 import { gt3AvailableSessionKeys, gt3FindSessionByUiKey } from '../../utils/gt3Sessions'
+import {
+  nascarAvailableSessionKeys,
+  nascarFindSessionByUiKey,
+} from '../../utils/nascarSessions'
 import { DataTable } from '../DataTable/DataTable'
 import type { DataTableColumn } from '../DataTable/DataTable'
 import { EmptyState } from '../ErrorState/ErrorState'
@@ -73,14 +77,20 @@ export function SessionResultsPanel({
   isLoading: boolean
   isFetching: boolean
   isError: boolean
-  variant?: 'f1' | 'gt3'
+  variant?: 'f1' | 'gt3' | 'nascar'
 }) {
   const available =
-    variant === 'gt3' ? gt3AvailableSessionKeys(sessions) : availableSessionKeys(sessions)
+    variant === 'gt3'
+      ? gt3AvailableSessionKeys(sessions)
+      : variant === 'nascar'
+        ? nascarAvailableSessionKeys(sessions)
+        : availableSessionKeys(sessions)
   const activeSession =
     variant === 'gt3'
       ? gt3FindSessionByUiKey(sessions, activeKey)
-      : findSessionByUiKey(sessions, activeKey)
+      : variant === 'nascar'
+        ? nascarFindSessionByUiKey(sessions, activeKey)
+        : findSessionByUiKey(sessions, activeKey)
   const notStarted = activeSession ? isSessionNotStarted(activeSession) : true
   const hasRows = (rows?.length ?? 0) > 0
   const showResultsSpinner = isLoading || (isFetching && !hasRows)
@@ -97,10 +107,20 @@ export function SessionResultsPanel({
       {
         key: 'driver',
         header: 'Гонщик',
-        render: (r) =>
-          variant === 'gt3' ? r.driverName : `${r.driverName} (#${r.driverNumber})`,
+        render: (r) => {
+          if (variant === 'gt3') return r.driverName
+          if (variant === 'nascar') {
+            const num = r.driverNumber > 0 ? `#${r.driverNumber} ` : ''
+            return `${num}${r.driverName}`
+          }
+          return `${r.driverName} (#${r.driverNumber})`
+        },
       },
-      { key: 'team', header: 'Команда', render: (r) => r.teamName },
+      {
+        key: 'team',
+        header: variant === 'nascar' && activeKey !== 'race' ? 'Машина' : 'Команда',
+        render: (r) => r.teamName,
+      },
     ]
 
     if (
@@ -117,7 +137,9 @@ export function SessionResultsPanel({
     }
 
     const timeHeader =
-      variant === 'gt3' && activeKey === 'race' ? 'Результат' : 'Лучшее время'
+      (variant === 'gt3' || variant === 'nascar') && activeKey === 'race'
+        ? 'Результат'
+        : 'Лучшее время'
 
     const timeAndLaps: DataTableColumn<ResultRow>[] = [
       {
@@ -136,7 +158,7 @@ export function SessionResultsPanel({
       { key: 'laps', header: 'Круги', render: (r) => r.laps },
     ]
 
-    if (activeKey === 'race' && variant === 'gt3') {
+    if (activeKey === 'race' && (variant === 'gt3' || variant === 'nascar')) {
       return [
         ...base,
         ...timeAndLaps,
@@ -164,9 +186,12 @@ export function SessionResultsPanel({
   return (
     <>
       <div className={styles.tabs} role="tablist">
-        {ALL_SESSION_KEYS.filter(
-          (key) => variant === 'f1' || (key !== 'sprint' && key !== 'sprint-qualifying'),
-        ).map((key) => {
+        {ALL_SESSION_KEYS.filter((key) => {
+          if (variant === 'nascar') {
+            return key === 'fp1' || key === 'qualifying' || key === 'race'
+          }
+          return variant === 'f1' || (key !== 'sprint' && key !== 'sprint-qualifying')
+        }).map((key) => {
           const inWeekend = available.includes(key)
           const isActive = key === activeKey
           return (
@@ -195,7 +220,7 @@ export function SessionResultsPanel({
         <DataTable
           rows={rows!}
           rowKey={(r) =>
-            variant === 'gt3'
+            variant === 'gt3' || variant === 'nascar'
               ? `${r.driverNumber}-${r.teamName}`
               : r.driverNumber
           }

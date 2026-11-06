@@ -27,7 +27,7 @@ import {
   gt3FindSessionByUiKey,
   gt3SessionStarted,
 } from '../utils/gt3Sessions'
-import styles from './Gt3Page.module.css'
+import styles from './HypercarPage.module.css'
 
 export function HypercarPage() {
   const seasonYear = HYPERCAR_SEASON_YEAR

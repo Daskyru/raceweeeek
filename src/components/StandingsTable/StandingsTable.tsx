@@ -33,12 +33,41 @@ export function StandingsTable({
   hasSeasonRaces: boolean
   isLoadingDrivers?: boolean
   isLoadingTeams?: boolean
-  variant?: 'f1' | 'gt3'
+  variant?: 'f1' | 'gt3' | 'nascar'
 }) {
   const [tab, setTab] = useState<'drivers' | 'constructors'>('drivers')
+  const driverVariant = variant === 'nascar' ? 'f1' : variant
 
   if (!hasSeasonRaces && !isLoadingDrivers && !isLoadingTeams) {
     return <EmptyState message="Зачёт появится после первой гонки сезона" />
+  }
+
+  if (variant === 'nascar') {
+    return isLoadingDrivers && drivers.length === 0 ? (
+      <LoadingSpinner variant="f1" />
+    ) : drivers.length === 0 ? (
+      <EmptyState message="Не удалось загрузить личный зачёт." />
+    ) : (
+      <DataTable
+        rows={drivers}
+        rowKey={(r) => r.driverNumber}
+        tableClassName={styles.standingsTable}
+        columns={[
+          {
+            key: 'pos',
+            header: 'Поз.',
+            className: tableStyles.pos,
+            render: (r) => r.position,
+          },
+          {
+            key: 'driver',
+            header: 'Гонщик',
+            render: (r) => `${r.name} (#${r.driverNumber})`,
+          },
+          { key: 'pts', header: 'Очки', render: (r) => r.points },
+        ]}
+      />
+    )
   }
 
   return (
@@ -60,7 +89,7 @@ export function StandingsTable({
           className={tab === 'constructors' ? styles.tabActive : styles.tab}
           onClick={() => setTab('constructors')}
         >
-          {variant === 'gt3' ? 'Зачёт машин' : 'Командный зачёт'}
+          {driverVariant === 'gt3' ? 'Зачёт машин' : 'Командный зачёт'}
         </button>
       </div>
       {tab === 'drivers' ? (
@@ -72,7 +101,7 @@ export function StandingsTable({
           <DataTable
             rows={drivers}
             rowKey={(r) =>
-              variant === 'gt3' && r.id != null ? r.id : r.driverNumber
+              driverVariant === 'gt3' && r.id != null ? r.id : r.driverNumber
             }
             tableClassName={styles.standingsTable}
             columns={[
@@ -86,9 +115,9 @@ export function StandingsTable({
                 key: 'driver',
                 header: 'Гонщик',
                 render: (r) =>
-                  variant === 'gt3' ? r.name : `${r.name} (#${r.driverNumber})`,
+                  driverVariant === 'gt3' ? r.name : `${r.name} (#${r.driverNumber})`,
               },
-              ...(variant === 'gt3'
+              ...(driverVariant === 'gt3'
                 ? [
                     {
                       key: 'car',
@@ -126,7 +155,7 @@ export function StandingsTable({
             },
             {
               key: 'name',
-              header: variant === 'gt3' ? 'Машина / команда' : 'Команда',
+              header: driverVariant === 'gt3' ? 'Машина / команда' : 'Команда',
               render: (r) => r.name,
             },
             { key: 'pts', header: 'Очки', render: (r) => r.points },

@@ -22,6 +22,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (p) => p.replace(/^\/api\/circuit/, ''),
       },
+      '/api/nascar': {
+        target: 'https://cf.nascar.com',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/nascar/, ''),
+        headers: {
+          Referer: 'https://www.nascar.com/',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        },
+      },
     },
   },
 })

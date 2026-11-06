@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "nascar:track-maps": "node scripts/fetch-nascar-track-schemes.mjs",
     "start": "node server.mjs",
     "lint": "oxlint",
     "preview": "vite preview"

@@ -6,6 +6,8 @@ interface Crumb {
   to?: string
   /** Red F1 branding for the current (non-link) crumb only */
   f1Red?: boolean
+  /** Solid white for the current crumb (e.g. NASCAR) */
+  white?: boolean
 }
 
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
@@ -20,7 +22,13 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
             </Link>
           ) : (
             <span
-              className={item.f1Red ? `${styles.current} ${styles.currentF1Red}` : styles.current}
+              className={
+                item.white
+                  ? `${styles.current} ${styles.currentWhite}`
+                  : item.f1Red
+                    ? `${styles.current} ${styles.currentF1Red}`
+                    : styles.current
+              }
             >
               {item.label}
             </span>
